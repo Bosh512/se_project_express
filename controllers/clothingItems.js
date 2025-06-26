@@ -3,7 +3,7 @@ const { DATAINVALID, NOTFOUND, SERVERERROR } = require("../utils/error");
 
 const createItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
-  ClothingItem.create({ name, weather, imageUrl })
+  ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
     .then((item) => res.status(201).send(item))
     .catch((error) => {
       console.error(error);
@@ -39,7 +39,8 @@ const updateItem = (req, res) => {
       console.error(error);
       if (error.name === "DocumentNotFoundError") {
         return res.status(NOTFOUND).send({ message: "Error 404, Not Found" });
-      } else if (error.name === "CastError") {
+      }
+      if (error.name === "CastError") {
         return res
           .status(DATAINVALID)
           .send({ message: "Error 400, Data Invalid" });
@@ -54,7 +55,8 @@ const deleteItem = (req, res) => {
   const { itemId } = req.params;
   console.log(itemId);
   ClothingItem.findByIdAndDelete(itemId)
-    .then((item) => {
+    .orFail()
+    .then(() => {
       res.status(204).send({});
     })
     .catch((error) => {
@@ -85,7 +87,8 @@ const likeItem = (req, res) => {
       console.error(error);
       if (error.name === "DocumentNotFoundError") {
         return res.status(NOTFOUND).send({ message: "Error 404, Not Found" });
-      } else if (error.name === "CastError") {
+      }
+      if (error.name === "CastError") {
         return res
           .status(DATAINVALID)
           .send({ message: "Error 400, Data Invalid" });
@@ -109,7 +112,8 @@ const dislikeItem = (req, res) => {
       console.error(error);
       if (error.name === "DocumentNotFoundError") {
         return res.status(NOTFOUND).send({ message: "Error 404, Not Found" });
-      } else if (error.name === "CastError") {
+      }
+      if (error.name === "CastError") {
         return res
           .status(DATAINVALID)
           .send({ message: "Error 400, Data Invalid" });

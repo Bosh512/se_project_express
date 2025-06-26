@@ -38,7 +38,8 @@ const getUserById = (req, res) => {
       console.error(error);
       if (error.name === "DocumentNotFoundError") {
         return res.status(NOTFOUND).send({ message: "Error 404, Not Found" });
-      } else if (error.name === "CastError") {
+      }
+      if (error.name === "CastError") {
         return res
           .status(DATAINVALID)
           .send({ message: "Error 400, Data Invalid" });
