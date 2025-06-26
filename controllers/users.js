@@ -1,5 +1,5 @@
-const User = require("../models/user.js");
-const { DATAINVALID, NOTFOUND, SERVERERROR } = require("../utils/error.js");
+const User = require("../models/user");
+const { DATAINVALID, NOTFOUND, SERVERERROR } = require("../utils/error");
 
 const getUsers = (req, res) => {
   User.find({})
