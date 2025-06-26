@@ -1,11 +1,14 @@
 const User = require("../models/user.js");
+const { DATAINVALID, NOTFOUND, SERVERERROR } = require("../utils/error.js");
 
 const getUsers = (req, res) => {
   User.find({})
     .then((users) => res.status(200).send(users))
     .catch((error) => {
       console.error(error);
-      return res.status(500).send({ message: error.message });
+      return res
+        .status(SERVERERROR)
+        .send({ message: "Error 500, Server Error" });
     });
 };
 
@@ -16,9 +19,13 @@ const createUser = (req, res) => {
     .catch((error) => {
       console.error(error);
       if (error.name === "ValidationError") {
-        return res.status(400).send({ message: error.message });
+        return res
+          .status(DATAINVALID)
+          .send({ message: "Error 400, Data Invalid" });
       }
-      return res.status(500).send({ message: error.message });
+      return res
+        .status(SERVERERROR)
+        .send({ message: "Error 500, Server Error" });
     });
 };
 
@@ -30,11 +37,15 @@ const getUserById = (req, res) => {
     .catch((error) => {
       console.error(error);
       if (error.name === "DocumentNotFoundError") {
-        return res.status(404).send({ message: error.message });
+        return res.status(NOTFOUND).send({ message: "Error 404, Not Found" });
       } else if (error.name === "CastError") {
-        return res.status(400).send({ message: error.message });
+        return res
+          .status(DATAINVALID)
+          .send({ message: "Error 400, Data Invalid" });
       }
-      return res.status(500).send({ message: error.message });
+      return res
+        .status(SERVERERROR)
+        .send({ message: "Error 500, Server Error" });
     });
 };
 

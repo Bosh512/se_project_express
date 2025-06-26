@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const indexRouter = require("./routes/index.js");
 const userRouter = require("./routes/users.js");
+const itemRouter = require("./routes/clothingItem.js");
 const routes = require("./routes");
 
 const app = express();
@@ -14,8 +15,16 @@ mongoose
   })
   .catch(console.error);
 
+app.use((req, res, next) => {
+  req.user = {
+    _id: "5d8b8592978f8bd833ca8133",
+  };
+  next();
+});
+
 app.use(express.json());
-app.use("/", userRouter);
+app.use("/users", userRouter);
+app.use("/items", itemRouter);
 app.use(routes);
 
 app.listen(3001, () => {
