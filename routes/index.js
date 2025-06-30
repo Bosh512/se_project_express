@@ -9,7 +9,7 @@ router.use("/items", itemRouter);
 router.use((req, res) => {
   res
     .status(SERVERERROR)
-    .send({ message: "Error 500, Server Error, Router Not Found" });
+    .send({ message: "Error 404, Server Error, Router Not Found" });
 });
 
 module.exports = router;

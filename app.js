@@ -1,8 +1,5 @@
 const express = require("express");
 const mongoose = require("mongoose");
-// const indexRouter = require("./routes/index");
-const userRouter = require("./routes/users");
-const itemRouter = require("./routes/clothingItem");
 const routes = require("./routes");
 
 const app = express();
@@ -23,8 +20,6 @@ app.use((req, res, next) => {
 });
 
 app.use(express.json());
-app.use("/users", userRouter);
-app.use("/items", itemRouter);
 app.use(routes);
 
 app.listen(PORT, () => {

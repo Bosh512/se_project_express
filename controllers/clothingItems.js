@@ -29,27 +29,27 @@ const getItems = (req, res) => {
     });
 };
 
-const updateItem = (req, res) => {
-  const { itemId } = req.params;
-  const { imageUrl } = req.body;
-  ClothingItem.findByIdAndUpdate(itemId, { $set: { imageUrl } }, { new: true })
-    .orFail()
-    .then((item) => res.status(200).send(item))
-    .catch((error) => {
-      console.error(error);
-      if (error.name === "DocumentNotFoundError") {
-        return res.status(NOTFOUND).send({ message: "Error 404, Not Found" });
-      }
-      if (error.name === "CastError") {
-        return res
-          .status(DATAINVALID)
-          .send({ message: "Error 400, Data Invalid" });
-      }
-      return res
-        .status(SERVERERROR)
-        .send({ message: "Error 500, Server Error" });
-    });
-};
+// const updateItem = (req, res) => {
+//   const { itemId } = req.params;
+//   const { imageUrl } = req.body;
+//   ClothingItem.findByIdAndUpdate(itemId, { $set: { imageUrl } }, { new: true })
+//     .orFail()
+//     .then((item) => res.status(200).send(item))
+//     .catch((error) => {
+//       console.error(error);
+//       if (error.name === "DocumentNotFoundError") {
+//         return res.status(NOTFOUND).send({ message: "Error 404, Not Found" });
+//       }
+//       if (error.name === "CastError") {
+//         return res
+//           .status(DATAINVALID)
+//           .send({ message: "Error 400, Data Invalid" });
+//       }
+//       return res
+//         .status(SERVERERROR)
+//         .send({ message: "Error 500, Server Error" });
+//     });
+// };
 
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
