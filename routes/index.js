@@ -1,14 +1,14 @@
 const router = require("express").Router();
 const userRouter = require("./users");
 const itemRouter = require("./clothingItem");
-const { SERVERERROR } = require("../utils/error");
+const { NOTFOUND } = require("../utils/error");
 
 router.use("/users", userRouter);
 router.use("/items", itemRouter);
 
 router.use((req, res) => {
   res
-    .status(SERVERERROR)
+    .status(NOTFOUND)
     .send({ message: "Error 404, Server Error, Router Not Found" });
 });
 
