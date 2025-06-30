@@ -128,7 +128,7 @@ const dislikeItem = (req, res) => {
 module.exports = {
   getItems,
   createItem,
-  updateItem,
+  // updateItem,
   deleteItem,
   likeItem,
   dislikeItem,
