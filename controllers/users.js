@@ -1,5 +1,13 @@
+const user = require("../models/user");
 const User = require("../models/user");
-const { DATAINVALID, NOTFOUND, SERVERERROR } = require("../utils/error");
+const jwt = require("jsonwebtoken");
+const {
+  DATAINVALID,
+  NOTFOUND,
+  SERVERERROR,
+  CONFLICTERROR,
+  AUTHENTICATIONERROR,
+} = require("../utils/error");
 
 const getUsers = (req, res) => {
   User.find({})
@@ -13,8 +21,8 @@ const getUsers = (req, res) => {
 };
 
 const createUser = (req, res) => {
-  const { name, avatar } = req.body;
-  User.create({ name, avatar })
+  const { name, avatar, email, password } = req.body;
+  User.create({ name, avatar, email, password })
     .then((user) => res.status(201).send(user))
     .catch((error) => {
       console.error(error);
@@ -22,6 +30,11 @@ const createUser = (req, res) => {
         return res
           .status(DATAINVALID)
           .send({ message: "Error 400, Data Invalid" });
+      }
+      if (error.code === 11000) {
+        return res
+          .status(CONFLICTERROR)
+          .send({ message: "Error 409, Data Conflicting" });
       }
       return res
         .status(SERVERERROR)
@@ -50,4 +63,20 @@ const getUserById = (req, res) => {
     });
 };
 
-module.exports = { getUsers, createUser, getUserById };
+const login = (req, res) => {
+  const { email, password } = req.body;
+  User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+        expiresIn: "7d",
+      });
+      res.send({ token });
+    })
+    .catch((error) => {
+      res
+        .status(AUTHENTICATIONERROR)
+        .send({ message: "Error 401, Authentication Error" });
+    });
+};
+
+module.exports = { getUsers, getUserById, login, createUser };
