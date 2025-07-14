@@ -3,6 +3,7 @@ const NOTFOUND = 404;
 const SERVERERROR = 500;
 const CONFLICTERROR = 409;
 const AUTHENTICATIONERROR = 401;
+const FORBIDDEN = 403;
 
 module.exports = {
   DATAINVALID,
@@ -10,4 +11,5 @@ module.exports = {
   SERVERERROR,
   CONFLICTERROR,
   AUTHENTICATIONERROR,
+  FORBIDDEN,
 };

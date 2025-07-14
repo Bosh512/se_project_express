@@ -1,6 +1,6 @@
-const user = require("../models/user");
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
+const { JWT_SECRET } = require("../utils/config");
 const {
   DATAINVALID,
   NOTFOUND,
@@ -23,7 +23,11 @@ const getUsers = (req, res) => {
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
   User.create({ name, avatar, email, password })
-    .then((user) => res.status(201).send(user))
+    .then((user) => {
+      const userObject = user.toObject();
+      delete userObject.password;
+      res.status(201).send({ userObject });
+    })
     .catch((error) => {
       console.error(error);
       if (error.name === "ValidationError") {
@@ -42,8 +46,8 @@ const createUser = (req, res) => {
     });
 };
 
-const getUserById = (req, res) => {
-  const { userId } = req.params;
+const getCurrentUser = (req, res) => {
+  const { userId } = req.user;
   User.findById(userId)
     .orFail()
     .then((user) => res.status(200).send(user))
@@ -79,4 +83,31 @@ const login = (req, res) => {
     });
 };
 
-module.exports = { getUsers, getUserById, login, createUser };
+const updateUser = (req, res) => {
+  const { name, avatar } = req.body;
+  const { userId } = req.user;
+  User.findByIdAndUpdate(userId, { name, avatar }, { new: true })
+    .orFail()
+    .then((user) => res.status(200).send(user))
+    .catch((error) => {
+      console.error(error);
+      if (error.name === "DocumentNotFoundError") {
+        return res.status(NOTFOUND).send({ message: "Error 404, Not Found" });
+      }
+      if (error.name === "CastError") {
+        return res
+          .status(DATAINVALID)
+          .send({ message: "Error 400, Data Invalid" });
+      }
+      if (error.name === "ValidationError") {
+        return res
+          .status(DATAINVALID)
+          .send({ message: "Error 400, Data Invalid" });
+      }
+      return res
+        .status(SERVERERROR)
+        .send({ message: "Error 500, Server Error" });
+    });
+};
+
+module.exports = { getUsers, getCurrentUser, login, createUser, updateUser };

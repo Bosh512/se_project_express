@@ -1,5 +1,10 @@
 const ClothingItem = require("../models/clothingItem");
-const { DATAINVALID, NOTFOUND, SERVERERROR } = require("../utils/error");
+const {
+  DATAINVALID,
+  NOTFOUND,
+  SERVERERROR,
+  FORBIDDEN,
+} = require("../utils/error");
 
 const createItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
@@ -54,10 +59,37 @@ const getItems = (req, res) => {
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
   console.log(itemId);
-  ClothingItem.findByIdAndDelete(itemId)
-    .orFail()
+  ClothingItem.findById(req.params.itemId)
     .then((item) => {
-      res.status(200).send(item);
+      const itemOwner = item.owner.toString();
+      const userId = req.user._id.toString();
+      if (itemOwner === userId) {
+        ClothingItem.findByIdAndDelete(itemId)
+          .orFail()
+          .then((item) => {
+            res.status(200).send(item);
+          })
+          .catch((error) => {
+            console.error(error);
+            if (error.name === "DocumentNotFoundError") {
+              return res
+                .status(NOTFOUND)
+                .send({ message: "Error 404, Not Found" });
+            }
+            if (error.name === "CastError") {
+              return res
+                .status(DATAINVALID)
+                .send({ message: "Error 400, Data Invalid" });
+            }
+            return res
+              .status(SERVERERROR)
+              .send({ message: "Error 500, Server Error" });
+          });
+      } else {
+        return res
+          .status(FORBIDDEN)
+          .send({ message: "Error 403, Request Denied" });
+      }
     })
     .catch((error) => {
       console.error(error);
