@@ -6,6 +6,7 @@ const AUTHENTICATIONERROR = 401;
 const FORBIDDEN = 403;
 
 const OK = 200;
+const SUCCESSFULCREATION = 201;
 
 //FOR CONTROLLERS
 
@@ -37,8 +38,12 @@ const authenticationError = (res) => {
     .send({ message: "Error 401, Authentication Error" });
 };
 
-const sendItem = (res) => {
+const sendItem = (res, item) => {
   return res.status(OK).send(item);
+};
+
+const sendUser = (res, user) => {
+  return res.status(OK).send(user);
 };
 
 module.exports = {
@@ -55,5 +60,6 @@ module.exports = {
   errorDenied,
   authenticationError,
   sendItem,
+  sendUser,
   conflictError,
 };

@@ -12,7 +12,7 @@ const createItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
   ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
     .then((item) => {
-      res.status(201).send(item);
+      return sendItem(res, item);
     })
     .catch((error) => {
       console.error(error);
@@ -26,7 +26,9 @@ const createItem = (req, res) => {
 
 const getItems = (req, res) => {
   ClothingItem.find({})
-    .then((item) => res.status(200).send(item))
+    .then((item) => {
+      return sendItem(res, item);
+    })
     .catch((error) => {
       console.error(error);
       return serverError(res);
@@ -59,6 +61,7 @@ const deleteItem = (req, res) => {
   const { itemId } = req.params;
   console.log(itemId);
   ClothingItem.findById(req.params.itemId)
+    .orFail()
     .then((item) => {
       const itemOwner = item.owner.toString();
       const userId = req.user._id.toString();
@@ -66,7 +69,7 @@ const deleteItem = (req, res) => {
         ClothingItem.findByIdAndDelete(itemId)
           .orFail()
           .then((item) => {
-            return sendItem(res);
+            return sendItem(res, item);
           })
           .catch((error) => {
             console.error(error);

@@ -7,7 +7,7 @@ const {
   serverError,
   errorNotFound,
   authenticationError,
-  duplicateError,
+  sendUser,
 } = require("../utils/error");
 
 const getUsers = (req, res) => {
@@ -43,7 +43,9 @@ const getCurrentUser = (req, res) => {
   const { _id } = req.user;
   User.findById(_id)
     .orFail()
-    .then((user) => res.status(200).send(user))
+    .then((user) => {
+      return sendUser(res, user);
+    })
     .catch((error) => {
       console.error(error);
       if (error.name === "DocumentNotFoundError") {
@@ -92,7 +94,9 @@ const updateUser = (req, res) => {
   const { _id } = req.user;
   User.findByIdAndUpdate(_id, { name, avatar }, { new: true })
     .orFail()
-    .then((user) => res.status(200).send(user))
+    .then((user) => {
+      return sendUser(res, user);
+    })
     .catch((error) => {
       console.error(error);
       if (error.name === "DocumentNotFoundError") {
