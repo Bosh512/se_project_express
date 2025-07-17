@@ -2,9 +2,7 @@ const jwt = require("jsonwebtoken");
 const { authenticationError } = require("../utils/error");
 const { JWT_SECRET } = require("../utils/config");
 
-const replaceBearerToken = (header) => {
-  return header.replace("Bearer ", "");
-};
+const replaceBearerToken = (header) => header.replace("Bearer ", "");
 
 function auth(req, res, next) {
   const { authorization } = req.headers;

@@ -1,6 +1,6 @@
-const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../utils/config");
+const User = require("../models/user");
 const {
   validationError,
   conflictError,
@@ -8,11 +8,13 @@ const {
   errorNotFound,
   authenticationError,
   sendUser,
+  sendUsers,
+  AUTHENTICATIONERROR,
 } = require("../utils/error");
 
 const getUsers = (req, res) => {
   User.find({})
-    .then((users) => res.status(200).send(users))
+    .then((users) => sendUsers(res, users))
     .catch((error) => {
       console.error(error);
       return serverError(res);
@@ -43,9 +45,7 @@ const getCurrentUser = (req, res) => {
   const { _id } = req.user;
   User.findById(_id)
     .orFail()
-    .then((user) => {
-      return sendUser(res, user);
-    })
+    .then((user) => sendUser(res, user))
     .catch((error) => {
       console.error(error);
       if (error.name === "DocumentNotFoundError") {
@@ -94,9 +94,7 @@ const updateUser = (req, res) => {
   const { _id } = req.user;
   User.findByIdAndUpdate(_id, { name, avatar }, { new: true })
     .orFail()
-    .then((user) => {
-      return sendUser(res, user);
-    })
+    .then((user) => sendUser(res, user))
     .catch((error) => {
       console.error(error);
       if (error.name === "DocumentNotFoundError") {

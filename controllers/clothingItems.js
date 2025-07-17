@@ -11,9 +11,7 @@ const {
 const createItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
   ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
-    .then((item) => {
-      return sendItem(res, item);
-    })
+    .then((item) => sendItem(res, item))
     .catch((error) => {
       console.error(error);
       if (error.name === "ValidationError") {
@@ -25,9 +23,7 @@ const createItem = (req, res) => {
 
 const getItems = (req, res) => {
   ClothingItem.find({})
-    .then((item) => {
-      return sendItem(res, item);
-    })
+    .then((item) => sendItem(res, item))
     .catch((error) => {
       console.error(error);
       return serverError(res);
@@ -67,9 +63,7 @@ const deleteItem = (req, res) => {
       if (itemOwner === userId) {
         ClothingItem.findByIdAndDelete(itemId)
           .orFail()
-          .then((item) => {
-            return sendItem(res, item);
-          })
+          .then((item) => sendItem(res, item))
           .catch((error) => {
             console.error(error);
             if (error.name === "DocumentNotFoundError") {
@@ -104,7 +98,7 @@ const likeItem = (req, res) => {
     { new: true }
   )
     .orFail()
-    .then((item) => res.status(200).send(item))
+    .then((item) => sendItem(res, item))
     .catch((error) => {
       console.error(error);
       if (error.name === "DocumentNotFoundError") {
@@ -125,7 +119,7 @@ const dislikeItem = (req, res) => {
     { new: true }
   )
     .orFail()
-    .then((item) => res.status(200).send(item))
+    .then((item) => sendItem(res, item))
     .catch((error) => {
       console.error(error);
       if (error.name === "DocumentNotFoundError") {

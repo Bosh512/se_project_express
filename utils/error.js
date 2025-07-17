@@ -6,9 +6,8 @@ const AUTHENTICATIONERROR = 401;
 const FORBIDDEN = 403;
 
 const OK = 200;
-const SUCCESSFULCREATION = 201;
 
-//FOR CONTROLLERS
+// FOR CONTROLLERS
 
 const validationError = (res) => {
   return res.status(DATAINVALID).send({ message: "Error 400, Data Invalid" });
@@ -46,6 +45,10 @@ const sendUser = (res, user) => {
   return res.status(OK).send(user);
 };
 
+const sendUsers = (res, users) => {
+  return res.status(OK).send(users);
+};
+
 module.exports = {
   DATAINVALID,
   NOTFOUND,
@@ -61,5 +64,6 @@ module.exports = {
   authenticationError,
   sendItem,
   sendUser,
+  sendUsers,
   conflictError,
 };

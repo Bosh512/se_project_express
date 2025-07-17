@@ -9,8 +9,6 @@ router.use("/items", itemRouter);
 router.post("/signin", login);
 router.post("/signup", createUser);
 
-router.use((req, res) => {
-  return errorNotFound(res);
-});
+router.use((req, res) => errorNotFound(res));
 
 module.exports = router;
