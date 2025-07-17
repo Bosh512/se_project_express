@@ -74,9 +74,8 @@ const deleteItem = (req, res) => {
             }
             return serverError(res);
           });
-      } else {
-        return errorDenied(res);
       }
+      return errorDenied(res);
     })
     .catch((error) => {
       console.error(error);
