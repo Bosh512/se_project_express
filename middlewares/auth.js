@@ -1,16 +1,6 @@
-const {
-  DATAINVALID,
-  NOTFOUND,
-  SERVERERROR,
-  CONFLICTERROR,
-  AUTHENTICATIONERROR,
-} = require("../utils/error");
 const jwt = require("jsonwebtoken");
+const { authenticationError } = require("../utils/error");
 const { JWT_SECRET } = require("../utils/config");
-
-const handleAuthError = (res) => {
-  res.status(AUTHENTICATIONERROR).send({ message: "Authorization Error" });
-};
 
 const replaceBearerToken = (header) => {
   return header.replace("Bearer ", "");
@@ -20,7 +10,7 @@ function auth(req, res, next) {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith("Bearer ")) {
-    return handleAuthError(res);
+    return authenticationError(res);
   }
   const token = replaceBearerToken(authorization);
   let payload;
@@ -28,11 +18,10 @@ function auth(req, res, next) {
   try {
     payload = jwt.verify(token, JWT_SECRET);
   } catch (error) {
-    return handleAuthError(res);
+    return authenticationError(res);
   }
-
   req.user = payload;
-  next();
+  return next();
 }
 
-module.exports = { auth };
+module.exports = auth;

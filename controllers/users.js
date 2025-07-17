@@ -2,11 +2,12 @@ const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../utils/config");
 const {
-  DATAINVALID,
-  NOTFOUND,
-  SERVERERROR,
-  CONFLICTERROR,
-  AUTHENTICATIONERROR,
+  validationError,
+  conflictError,
+  serverError,
+  errorNotFound,
+  authenticationError,
+  duplicateError,
 } = require("../utils/error");
 
 const getUsers = (req, res) => {
@@ -14,9 +15,7 @@ const getUsers = (req, res) => {
     .then((users) => res.status(200).send(users))
     .catch((error) => {
       console.error(error);
-      return res
-        .status(SERVERERROR)
-        .send({ message: "Error 500, Server Error" });
+      return serverError(res);
     });
 };
 
@@ -31,44 +30,35 @@ const createUser = (req, res) => {
     .catch((error) => {
       console.error(error);
       if (error.name === "ValidationError") {
-        return res
-          .status(DATAINVALID)
-          .send({ message: "Error 400, Data Invalid" });
+        return validationError(res);
       }
       if (error.code === 11000) {
-        return res
-          .status(CONFLICTERROR)
-          .send({ message: "Error 409, Data Conflicting" });
+        return conflictError(res);
       }
-      return res
-        .status(SERVERERROR)
-        .send({ message: "Error 500, Server Error" });
+      return serverError(res);
     });
 };
 
 const getCurrentUser = (req, res) => {
-  const { userId } = req.user;
-  User.findById(userId)
+  const { _id } = req.user;
+  User.findById(_id)
     .orFail()
     .then((user) => res.status(200).send(user))
     .catch((error) => {
       console.error(error);
       if (error.name === "DocumentNotFoundError") {
-        return res.status(NOTFOUND).send({ message: "Error 404, Not Found" });
+        return errorNotFound(res);
       }
       if (error.name === "CastError") {
-        return res
-          .status(DATAINVALID)
-          .send({ message: "Error 400, Data Invalid" });
+        return validationError(res);
       }
-      return res
-        .status(SERVERERROR)
-        .send({ message: "Error 500, Server Error" });
+      return serverError(res);
     });
 };
 
 const login = (req, res) => {
   const { email, password } = req.body;
+  console.log("JWT_SECRET:", JWT_SECRET);
   User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
@@ -77,36 +67,44 @@ const login = (req, res) => {
       res.send({ token });
     })
     .catch((error) => {
-      res
-        .status(AUTHENTICATIONERROR)
-        .send({ message: "Error 401, Authentication Error" });
+      console.error(error);
+      if (error.code === 401) {
+        return authenticationError(res);
+      }
+      if (error.name === "DocumentNotFoundError") {
+        return errorNotFound(res);
+      }
+      if (error.name === "CastError") {
+        return validationError(res);
+      }
+      if (error.name === "ValidationError") {
+        return validationError(res);
+      }
+      if (email === undefined || password === undefined) {
+        return validationError(res);
+      }
+      return serverError(res);
     });
 };
 
 const updateUser = (req, res) => {
   const { name, avatar } = req.body;
-  const { userId } = req.user;
-  User.findByIdAndUpdate(userId, { name, avatar }, { new: true })
+  const { _id } = req.user;
+  User.findByIdAndUpdate(_id, { name, avatar }, { new: true })
     .orFail()
     .then((user) => res.status(200).send(user))
     .catch((error) => {
       console.error(error);
       if (error.name === "DocumentNotFoundError") {
-        return res.status(NOTFOUND).send({ message: "Error 404, Not Found" });
+        return errorNotFound(res);
       }
       if (error.name === "CastError") {
-        return res
-          .status(DATAINVALID)
-          .send({ message: "Error 400, Data Invalid" });
+        return validationError(res);
       }
       if (error.name === "ValidationError") {
-        return res
-          .status(DATAINVALID)
-          .send({ message: "Error 400, Data Invalid" });
+        return validationError(res);
       }
-      return res
-        .status(SERVERERROR)
-        .send({ message: "Error 500, Server Error" });
+      return serverError(res);
     });
 };
 

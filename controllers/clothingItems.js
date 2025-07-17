@@ -1,25 +1,26 @@
+const { response } = require("express");
 const ClothingItem = require("../models/clothingItem");
 const {
-  DATAINVALID,
-  NOTFOUND,
-  SERVERERROR,
-  FORBIDDEN,
+  validationError,
+  serverError,
+  errorNotFound,
+  errorDenied,
+  sendItem,
 } = require("../utils/error");
 
 const createItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
   ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
-    .then((item) => res.status(201).send(item))
+    .then((item) => {
+      res.status(201).send(item);
+    })
     .catch((error) => {
       console.error(error);
       if (error.name === "ValidationError") {
-        return res
-          .status(DATAINVALID)
-          .send({ message: "Error 400, Data Invalid" });
+        return validationError(res);
+      } else {
+        return serverError(res);
       }
-      return res
-        .status(SERVERERROR)
-        .send({ message: "Error 500, Server Error" });
     });
 };
 
@@ -28,9 +29,7 @@ const getItems = (req, res) => {
     .then((item) => res.status(200).send(item))
     .catch((error) => {
       console.error(error);
-      return res
-        .status(SERVERERROR)
-        .send({ message: "Error 500, Server Error" });
+      return serverError(res);
     });
 };
 
@@ -67,43 +66,31 @@ const deleteItem = (req, res) => {
         ClothingItem.findByIdAndDelete(itemId)
           .orFail()
           .then((item) => {
-            res.status(200).send(item);
+            return sendItem(res);
           })
           .catch((error) => {
             console.error(error);
             if (error.name === "DocumentNotFoundError") {
-              return res
-                .status(NOTFOUND)
-                .send({ message: "Error 404, Not Found" });
+              return errorNotFound(res);
             }
             if (error.name === "CastError") {
-              return res
-                .status(DATAINVALID)
-                .send({ message: "Error 400, Data Invalid" });
+              return validationError(res);
             }
-            return res
-              .status(SERVERERROR)
-              .send({ message: "Error 500, Server Error" });
+            return serverError(res);
           });
       } else {
-        return res
-          .status(FORBIDDEN)
-          .send({ message: "Error 403, Request Denied" });
+        return errorDenied(res);
       }
     })
     .catch((error) => {
       console.error(error);
       if (error.name === "DocumentNotFoundError") {
-        return res.status(NOTFOUND).send({ message: "Error 404, Not Found" });
+        return errorNotFound(res);
       }
       if (error.name === "CastError") {
-        return res
-          .status(DATAINVALID)
-          .send({ message: "Error 400, Data Invalid" });
+        return validationError(res);
       }
-      return res
-        .status(SERVERERROR)
-        .send({ message: "Error 500, Server Error" });
+      return serverError(res);
     });
 };
 
@@ -119,16 +106,12 @@ const likeItem = (req, res) => {
     .catch((error) => {
       console.error(error);
       if (error.name === "DocumentNotFoundError") {
-        return res.status(NOTFOUND).send({ message: "Error 404, Not Found" });
+        return errorNotFound(res);
       }
       if (error.name === "CastError") {
-        return res
-          .status(DATAINVALID)
-          .send({ message: "Error 400, Data Invalid" });
+        return validationError(res);
       }
-      return res
-        .status(SERVERERROR)
-        .send({ message: "Error 500, Server Error" });
+      return serverError(res);
     });
 };
 
@@ -144,16 +127,12 @@ const dislikeItem = (req, res) => {
     .catch((error) => {
       console.error(error);
       if (error.name === "DocumentNotFoundError") {
-        return res.status(NOTFOUND).send({ message: "Error 404, Not Found" });
+        return errorNotFound(res);
       }
       if (error.name === "CastError") {
-        return res
-          .status(DATAINVALID)
-          .send({ message: "Error 400, Data Invalid" });
+        return validationError(res);
       }
-      return res
-        .status(SERVERERROR)
-        .send({ message: "Error 500, Server Error" });
+      return serverError(res);
     });
 };
 

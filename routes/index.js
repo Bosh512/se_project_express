@@ -1,17 +1,16 @@
 const router = require("express").Router();
 const userRouter = require("./users");
 const itemRouter = require("./clothingItem");
-const { NOTFOUND } = require("../utils/error");
+const { errorNotFound } = require("../utils/error");
+const { login, createUser } = require("../controllers/users");
 
 router.use("/users", userRouter);
 router.use("/items", itemRouter);
+router.post("/signin", login);
+router.post("/signup", createUser);
 
 router.use((req, res) => {
-  res
-    .status(NOTFOUND)
-    .send({ message: "Error 404, Server Error, Router Not Found" });
+  return errorNotFound(res);
 });
 
 module.exports = router;
-
-//asdf
