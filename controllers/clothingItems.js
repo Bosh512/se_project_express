@@ -1,4 +1,4 @@
-const { response } = require("express");
+// const { response } = require("express");
 const ClothingItem = require("../models/clothingItem");
 const {
   validationError,
@@ -18,9 +18,8 @@ const createItem = (req, res) => {
       console.error(error);
       if (error.name === "ValidationError") {
         return validationError(res);
-      } else {
-        return serverError(res);
       }
+      return serverError(res);
     });
 };
 
