@@ -9,45 +9,31 @@ const OK = 200;
 
 // FOR CONTROLLERS
 
-const validationError = (res) => {
-  return res.status(DATAINVALID).send({ message: "Error 400, Data Invalid" });
-};
+const validationError = (res) =>
+  res.status(DATAINVALID).send({ message: "Error 400, Data Invalid" });
 
-const serverError = (res) => {
-  return res.status(SERVERERROR).send({ message: "Error 500, Server Error" });
-};
+const serverError = (res) =>
+  res.status(SERVERERROR).send({ message: "Error 500, Server Error" });
 
-const errorNotFound = (res) => {
-  return res.status(NOTFOUND).send({ message: "Error 404, Not Found" });
-};
+const errorNotFound = (res) =>
+  res.status(NOTFOUND).send({ message: "Error 404, Not Found" });
 
-const errorDenied = (res) => {
-  return res.status(FORBIDDEN).send({ message: "Error 403, Request Denied" });
-};
+const errorDenied = (res) =>
+  res.status(FORBIDDEN).send({ message: "Error 403, Request Denied" });
 
-const conflictError = (res) => {
-  return res
-    .status(CONFLICTERROR)
-    .send({ message: "Error 409, Data Conflicting" });
-};
+const conflictError = (res) =>
+  res.status(CONFLICTERROR).send({ message: "Error 409, Data Conflicting" });
 
-const authenticationError = (res) => {
-  return res
+const authenticationError = (res) =>
+  res
     .status(AUTHENTICATIONERROR)
     .send({ message: "Error 401, Authentication Error" });
-};
 
-const sendItem = (res, item) => {
-  return res.status(OK).send(item);
-};
+const sendItem = (res, item) => res.status(OK).send(item);
 
-const sendUser = (res, user) => {
-  return res.status(OK).send(user);
-};
+const sendUser = (res, user) => res.status(OK).send(user);
 
-const sendUsers = (res, users) => {
-  return res.status(OK).send(users);
-};
+const sendUsers = (res, users) => res.status(OK).send(users);
 
 module.exports = {
   DATAINVALID,

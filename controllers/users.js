@@ -9,7 +9,6 @@ const {
   authenticationError,
   sendUser,
   sendUsers,
-  AUTHENTICATIONERROR,
 } = require("../utils/error");
 
 const getUsers = (req, res) => {

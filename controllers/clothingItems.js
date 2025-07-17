@@ -61,9 +61,9 @@ const deleteItem = (req, res) => {
       const itemOwner = item.owner.toString();
       const userId = req.user._id.toString();
       if (itemOwner === userId) {
-        ClothingItem.findByIdAndDelete(itemId)
+        return ClothingItem.findByIdAndDelete(itemId)
           .orFail()
-          .then((item) => sendItem(res, item))
+          .then(() => sendItem(res, item))
           .catch((error) => {
             console.error(error);
             if (error.name === "DocumentNotFoundError") {
