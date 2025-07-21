@@ -81,7 +81,11 @@ const login = (req, res) => {
 const updateUser = (req, res) => {
   const { name, avatar } = req.body;
   const { _id } = req.user;
-  User.findByIdAndUpdate(_id, { name, avatar },{ new: true, runValidators: true }
+  User.findByIdAndUpdate(
+    _id,
+    { name, avatar },
+    { new: true, runValidators: true }
+  )
     .orFail()
     .then((user) => sendUser(res, user))
     .catch((error) => {
