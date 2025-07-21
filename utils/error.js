@@ -33,8 +33,6 @@ const sendItem = (res, item) => res.status(OK).send(item);
 
 const sendUser = (res, user) => res.status(OK).send(user);
 
-const sendUsers = (res, users) => res.status(OK).send(users);
-
 module.exports = {
   DATAINVALID,
   NOTFOUND,
@@ -50,6 +48,5 @@ module.exports = {
   authenticationError,
   sendItem,
   sendUser,
-  sendUsers,
   conflictError,
 };

@@ -8,17 +8,7 @@ const {
   errorNotFound,
   authenticationError,
   sendUser,
-  sendUsers,
 } = require("../utils/error");
-
-const getUsers = (req, res) => {
-  User.find({})
-    .then((users) => sendUsers(res, users))
-    .catch((error) => {
-      console.error(error);
-      return serverError(res);
-    });
-};
 
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
@@ -42,6 +32,9 @@ const createUser = (req, res) => {
 
 const getCurrentUser = (req, res) => {
   const { _id } = req.user;
+  if (!email || !password) {
+    return validationError(res);
+  }
   User.findById(_id)
     .orFail()
     .then((user) => sendUser(res, user))
@@ -59,6 +52,9 @@ const getCurrentUser = (req, res) => {
 
 const login = (req, res) => {
   const { email, password } = req.body;
+  if (!email || !password) {
+    return validationError(res);
+  }
   console.log("JWT_SECRET:", JWT_SECRET);
   User.findUserByCredentials(email, password)
     .then((user) => {
@@ -72,16 +68,10 @@ const login = (req, res) => {
       if (error.code === 401) {
         return authenticationError(res);
       }
-      if (error.name === "DocumentNotFoundError") {
-        return errorNotFound(res);
-      }
       if (error.name === "CastError") {
         return validationError(res);
       }
       if (error.name === "ValidationError") {
-        return validationError(res);
-      }
-      if (email === undefined || password === undefined) {
         return validationError(res);
       }
       return serverError(res);
@@ -91,7 +81,7 @@ const login = (req, res) => {
 const updateUser = (req, res) => {
   const { name, avatar } = req.body;
   const { _id } = req.user;
-  User.findByIdAndUpdate(_id, { name, avatar }, { new: true })
+  User.findByIdAndUpdate(_id, { name, avatar },{ new: true, runValidators: true }
     .orFail()
     .then((user) => sendUser(res, user))
     .catch((error) => {
@@ -109,4 +99,4 @@ const updateUser = (req, res) => {
     });
 };
 
-module.exports = { getUsers, getCurrentUser, login, createUser, updateUser };
+module.exports = { getCurrentUser, login, createUser, updateUser };

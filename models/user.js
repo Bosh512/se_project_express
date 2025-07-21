@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema({
       message: "You must enter a valid email",
     },
   },
-  password: { type: String, required: true, select: false, minlength: 2 },
+  password: { type: String, required: true, select: false },
 });
 
 userSchema.pre("save", async function (next) {
