@@ -32,9 +32,6 @@ const createUser = (req, res) => {
 
 const getCurrentUser = (req, res) => {
   const { _id } = req.user;
-  if (!email || !password) {
-    return validationError(res);
-  }
   User.findById(_id)
     .orFail()
     .then((user) => sendUser(res, user))

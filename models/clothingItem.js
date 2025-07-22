@@ -36,6 +36,7 @@ const clothingItemSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  default: [],
 });
 
 module.exports = mongoose.model("item", clothingItemSchema);
