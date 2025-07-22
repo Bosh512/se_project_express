@@ -53,7 +53,7 @@ const login = (req, res) => {
     return validationError(res);
   }
   console.log("JWT_SECRET:", JWT_SECRET);
-  User.findUserByCredentials(email, password)
+  return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",

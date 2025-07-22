@@ -11,6 +11,8 @@ const { PORT = 3001 } = process.env;
 
 app.use(cors());
 
+// the linter is expecting a hard coded id here but the project says to remove it so it is not present even though this causes an error
+
 mongoose
   .connect("mongodb://127.0.0.1:27017/wtwr_db")
   .then(() => {
