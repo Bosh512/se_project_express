@@ -39,6 +39,7 @@ const deleteItem = (req, res) => {
       const itemOwner = item.owner.toString();
       const userId = req.user._id.toString();
       if (itemOwner === userId) {
+        sendItem(res, item);
         return ClothingItem.findByIdAndDelete(itemId);
       }
       return errorDenied(res);
