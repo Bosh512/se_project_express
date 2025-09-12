@@ -10,13 +10,38 @@ const {
   sendUser,
 } = require("../utils/error");
 
+// const createUser = (req, res) => {
+//   const { name, avatar, email, password } = req.body;
+//   User.create({ name, avatar, email, password })
+//     .then((user) => {
+//       const userObject = user.toObject();
+//       delete userObject.password;
+//       res.status(201).send({ userObject });
+//     })
+//     .catch((error) => {
+//       console.error(error);
+//       if (error.name === "ValidationError") {
+//         return validationError(res);
+//       }
+//       if (error.code === 11000) {
+//         return conflictError(res);
+//       }
+//       return serverError(res);
+//     });
+// };
+
+// this commented function only remains because I want to know what I originally had if for some reason an unforseen error occurs with its new refactored state
+
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
   User.create({ name, avatar, email, password })
     .then((user) => {
       const userObject = user.toObject();
       delete userObject.password;
-      res.status(201).send({ userObject });
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+        expiresIn: "7d",
+      });
+      res.status(201).send({ token, user: userObject });
     })
     .catch((error) => {
       console.error(error);
