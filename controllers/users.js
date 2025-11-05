@@ -2,35 +2,14 @@ const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../utils/config");
 const User = require("../models/user");
 const {
-  validationError,
-  conflictError,
-  serverError,
-  errorNotFound,
-  authenticationError,
+  ValidationError,
+  ServerError,
+  NotFoundError,
+  DeniedError,
+  ConflictError,
+  AuthenticationError,
   sendUser,
 } = require("../utils/error");
-
-// const createUser = (req, res) => {
-//   const { name, avatar, email, password } = req.body;
-//   User.create({ name, avatar, email, password })
-//     .then((user) => {
-//       const userObject = user.toObject();
-//       delete userObject.password;
-//       res.status(201).send({ userObject });
-//     })
-//     .catch((error) => {
-//       console.error(error);
-//       if (error.name === "ValidationError") {
-//         return validationError(res);
-//       }
-//       if (error.code === 11000) {
-//         return conflictError(res);
-//       }
-//       return serverError(res);
-//     });
-// };
-
-// this commented function only remains because I want to know what I originally had if for some reason an unforseen error occurs with its new refactored state
 
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
@@ -46,10 +25,16 @@ const createUser = (req, res) => {
     .catch((error) => {
       console.error(error);
       if (error.name === "ValidationError") {
-        return validationError(res);
+        return next(
+          new ValidationError("Invalid data provided. Error Code 400.")
+        );
       }
       if (error.code === 11000) {
-        return conflictError(res);
+        return next(
+          new ConflictError(
+            "The inputed data conflicts with data already in the database. Error Code 409 11000."
+          )
+        );
       }
       return serverError(res);
     });
@@ -63,12 +48,16 @@ const getCurrentUser = (req, res) => {
     .catch((error) => {
       console.error(error);
       if (error.name === "DocumentNotFoundError") {
-        return errorNotFound(res);
+        return next(NotFoundError("Not found. Error Code 404."));
       }
       if (error.name === "CastError") {
-        return validationError(res);
+        return next(
+          new ValidationError("Invalid data provided. Error Code 400.")
+        );
       }
-      return serverError(res);
+      return next(
+        new ServerError("There was an error with the server. Error Code 500")
+      );
     });
 };
 
@@ -88,15 +77,25 @@ const login = (req, res) => {
     .catch((error) => {
       console.error(error);
       if (error.code === 401) {
-        return authenticationError(res);
+        return next(
+          new AuthenticationError(
+            "The data could not be authenticated. Error Code 401."
+          )
+        );
       }
       if (error.name === "CastError") {
-        return validationError(res);
+        return next(
+          new ValidationError("Invalid data provided. Error Code 400.")
+        );
       }
       if (error.name === "ValidationError") {
-        return validationError(res);
+        return next(
+          new ValidationError("Invalid data provided. Error Code 400.")
+        );
       }
-      return serverError(res);
+      return next(
+        new ServerError("There was an error with the server. Error Code 500")
+      );
     });
 };
 
@@ -113,15 +112,21 @@ const updateUser = (req, res) => {
     .catch((error) => {
       console.error(error);
       if (error.name === "DocumentNotFoundError") {
-        return errorNotFound(res);
+        return next(NotFoundError("Not found. Error Code 404."));
       }
       if (error.name === "CastError") {
-        return validationError(res);
+        return next(
+          new ValidationError("Invalid data provided. Error Code 400.")
+        );
       }
       if (error.name === "ValidationError") {
-        return validationError(res);
+        return next(
+          new ValidationError("Invalid data provided. Error Code 400.")
+        );
       }
-      return serverError(res);
+      return next(
+        new ServerError("There was an error with the server. Error Code 500")
+      );
     });
 };
 

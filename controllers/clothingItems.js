@@ -1,36 +1,44 @@
 // const { response } = require("express");
 const ClothingItem = require("../models/clothingItem");
 const {
-  validationError,
-  serverError,
-  errorNotFound,
-  errorDenied,
+  ValidationError,
+  ServerError,
+  NotFoundError,
+  DeniedError,
+  ConflictError,
+  AuthenticationError,
   sendItem,
 } = require("../utils/error");
 
-const createItem = (req, res) => {
+const createItem = (req, res, next) => {
   const { name, weather, imageUrl } = req.body;
   ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
     .then((item) => sendItem(res, item))
     .catch((error) => {
       console.error(error);
       if (error.name === "ValidationError") {
-        return validationError(res);
+        return next(
+          new ValidationError("Invalid data provided. Error Code 400.")
+        );
       }
-      return serverError(res);
+      return next(
+        new ServerError("There was an error with the server. Error Code 500")
+      );
     });
 };
 
-const getItems = (req, res) => {
+const getItems = (req, res, next) => {
   ClothingItem.find({})
     .then((item) => sendItem(res, item))
     .catch((error) => {
       console.error(error);
-      return serverError(res);
+      return next(
+        new ServerError("There was an error with the server. Error Code 500")
+      );
     });
 };
 
-const deleteItem = (req, res) => {
+const deleteItem = (req, res, next) => {
   const { itemId } = req.params;
   console.log(itemId);
   ClothingItem.findById(req.params.itemId)
@@ -42,17 +50,21 @@ const deleteItem = (req, res) => {
         sendItem(res, item);
         return ClothingItem.findByIdAndDelete(itemId);
       }
-      return errorDenied(res);
+      return next(DeniedError("The request was denied. Error Code 403."));
     })
     .catch((error) => {
       console.error(error);
       if (error.name === "DocumentNotFoundError") {
-        return errorNotFound(res);
+        return next(NotFoundError("Not found. Error Code 404."));
       }
       if (error.name === "CastError") {
-        return validationError(res);
+        return next(
+          new ValidationError("Invalid data provided. Error Code 400.")
+        );
       }
-      return serverError(res);
+      return next(
+        new ServerError("There was an error with the server. Error Code 500")
+      );
     });
 };
 
@@ -68,12 +80,16 @@ const likeItem = (req, res) => {
     .catch((error) => {
       console.error(error);
       if (error.name === "DocumentNotFoundError") {
-        return errorNotFound(res);
+        return next(NotFoundError("Not found. Error Code 404."));
       }
       if (error.name === "CastError") {
-        return validationError(res);
+        return next(
+          new ValidationError("Invalid data provided. Error Code 400.")
+        );
       }
-      return serverError(res);
+      return next(
+        new ServerError("There was an error with the server. Error Code 500")
+      );
     });
 };
 
@@ -89,12 +105,16 @@ const dislikeItem = (req, res) => {
     .catch((error) => {
       console.error(error);
       if (error.name === "DocumentNotFoundError") {
-        return errorNotFound(res);
+        return next(NotFoundError("Not found. Error Code 404."));
       }
       if (error.name === "CastError") {
-        return validationError(res);
+        return next(
+          new ValidationError("Invalid data provided. Error Code 400.")
+        );
       }
-      return serverError(res);
+      return next(
+        new ServerError("There was an error with the server. Error Code 500")
+      );
     });
 };
 

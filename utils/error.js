@@ -1,52 +1,56 @@
-const DATAINVALID = 400;
-const NOTFOUND = 404;
-const SERVERERROR = 500;
-const CONFLICTERROR = 409;
-const AUTHENTICATIONERROR = 401;
-const FORBIDDEN = 403;
+class ValidationError extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = 400;
+  }
+}
 
-const OK = 200;
+class ServerError extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = 500;
+  }
+}
 
-// FOR CONTROLLERS
+class NotFoundError extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = 404;
+  }
+}
 
-const validationError = (res) =>
-  res.status(DATAINVALID).send({ message: "Error 400, Data Invalid" });
+class DeniedError extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = 403;
+  }
+}
 
-const serverError = (res) =>
-  res.status(SERVERERROR).send({ message: "Error 500, Server Error" });
+class ConflictError extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = 409;
+  }
+}
 
-const errorNotFound = (res) =>
-  res.status(NOTFOUND).send({ message: "Error 404, Not Found" });
-
-const errorDenied = (res) =>
-  res.status(FORBIDDEN).send({ message: "Error 403, Request Denied" });
-
-const conflictError = (res) =>
-  res.status(CONFLICTERROR).send({ message: "Error 409, Data Conflicting" });
-
-const authenticationError = (res) =>
-  res
-    .status(AUTHENTICATIONERROR)
-    .send({ message: "Error 401, Authentication Error" });
+class AuthenticationError extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = 401;
+  }
+}
 
 const sendItem = (res, item) => res.status(OK).send(item);
 
 const sendUser = (res, user) => res.status(OK).send(user);
 
 module.exports = {
-  DATAINVALID,
-  NOTFOUND,
-  SERVERERROR,
-  CONFLICTERROR,
-  AUTHENTICATIONERROR,
-  FORBIDDEN,
-  OK,
-  validationError,
-  serverError,
-  errorNotFound,
-  errorDenied,
-  authenticationError,
+  ValidationError,
+  ServerError,
+  NotFoundError,
+  DeniedError,
+  ConflictError,
+  AuthenticationError,
   sendItem,
   sendUser,
-  conflictError,
 };
