@@ -40,9 +40,9 @@ class AuthenticationError extends Error {
   }
 }
 
-const sendItem = (res, item) => res.status(OK).send(item);
+const sendItem = (res, item) => res.status(200).send(item);
 
-const sendUser = (res, user) => res.status(OK).send(user);
+const sendUser = (res, user) => res.status(200).send(user);
 
 module.exports = {
   ValidationError,
