@@ -1,4 +1,5 @@
 const dotenv = require("dotenv");
+require("dotenv").config();
 
 dotenv.config();
 const cors = require("cors");
