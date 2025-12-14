@@ -1,14 +1,10 @@
 // const { response } = require("express");
 const ClothingItem = require("../models/clothingItem");
-const {
-  ValidationError,
-  ServerError,
-  NotFoundError,
-  DeniedError,
-  ConflictError,
-  AuthenticationError,
-  sendItem,
-} = require("../utils/error");
+const { sendItem } = require("../utils/SendCodes");
+const { ValidationError } = require("../utils/ValidationError");
+const { ServerError } = require("../utils/ServerError");
+const { NotFoundError } = require("../utils/NotFoundError");
+const { DeniedError } = require("../utils/DeniedError");
 
 const createItem = (req, res, next) => {
   const { name, weather, imageUrl } = req.body;
@@ -68,7 +64,7 @@ const deleteItem = (req, res, next) => {
     });
 };
 
-const likeItem = (req, res) => {
+const likeItem = (req, res, next) => {
   console.log("Like Fired");
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
@@ -93,7 +89,7 @@ const likeItem = (req, res) => {
     });
 };
 
-const dislikeItem = (req, res) => {
+const dislikeItem = (req, res, next) => {
   console.log("Dislike Fired");
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,

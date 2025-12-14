@@ -1,17 +1,14 @@
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../utils/config");
 const User = require("../models/user");
-const {
-  ValidationError,
-  ServerError,
-  NotFoundError,
-  DeniedError,
-  ConflictError,
-  AuthenticationError,
-  sendUser,
-} = require("../utils/error");
+const { sendUser } = require("../utils/SendCodes");
+const { ValidationError } = require("../utils/ValidationError");
+const { ServerError } = require("../utils/ServerError");
+const { NotFoundError } = require("../utils/NotFoundError");
+const { ConflictError } = require("../utils/ConflictError");
+const { AuthenticationError } = require("../utils/AuthenticationError");
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const { name, avatar, email, password } = req.body;
   User.create({ name, avatar, email, password })
     .then((user) => {
@@ -36,11 +33,13 @@ const createUser = (req, res) => {
           )
         );
       }
-      return serverError(res);
+      return next(
+        new ServerError("There was an error with the server. Error Code 500")
+      );
     });
 };
 
-const getCurrentUser = (req, res) => {
+const getCurrentUser = (req, res, next) => {
   const { _id } = req.user;
   User.findById(_id)
     .orFail()
@@ -61,10 +60,10 @@ const getCurrentUser = (req, res) => {
     });
 };
 
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    return validationError(res);
+    return next(new ValidationError("Invalid data provided. Error Code 400."));
   }
   console.log("JWT_SECRET:", JWT_SECRET);
   return User.findUserByCredentials(email, password)
@@ -99,7 +98,7 @@ const login = (req, res) => {
     });
 };
 
-const updateUser = (req, res) => {
+const updateUser = (req, res, next) => {
   const { name, avatar } = req.body;
   const { _id } = req.user;
   User.findByIdAndUpdate(
