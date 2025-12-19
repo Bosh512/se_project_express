@@ -63,7 +63,7 @@ const validateUserLogIn = celebrate({
 
 const validateItem = celebrate({
   params: Joi.object().keys({
-    id: Joi.string().length(24).hex().required().messages({
+    itemId: Joi.string().length(24).hex().required().messages({
       "string.base": "ID must be a text value.",
       "string.empty": "ID cannot be empty.",
       "string.length": "ID must be exactly 24 characters long.",

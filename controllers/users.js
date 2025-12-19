@@ -82,16 +82,6 @@ const login = (req, res, next) => {
           )
         );
       }
-      if (error.name === "CastError") {
-        return next(
-          new ValidationError("Invalid data provided. Error Code 400.")
-        );
-      }
-      if (error.name === "ValidationError") {
-        return next(
-          new ValidationError("Invalid data provided. Error Code 400.")
-        );
-      }
       return next(
         new ServerError("There was an error with the server. Error Code 500")
       );
@@ -111,7 +101,7 @@ const updateUser = (req, res, next) => {
     .catch((error) => {
       console.error(error);
       if (error.name === "DocumentNotFoundError") {
-        return next(NotFoundError("Not found. Error Code 404."));
+        return next(new NotFoundError("Not found. Error Code 404."));
       }
       if (error.name === "CastError") {
         return next(

@@ -32,12 +32,12 @@ The project itself follows a basic and streamlined approach typical of Express.j
 
 Here are a couple videos of me pitching my project, and demonstrating its functionality.
 
-- [Demo Video](https://drive.google.com/file/d/1XO9fmdQrscRcFxMwV7UBOmQp8CbkVV6V/view?usp=sharing)
-- [Pitch Video](https://drive.google.com/file/d/1t9mmWnIuasQmGugOHnpAUkV2Pe1z1cwE/view?usp=sharing)
+- [Project Pitch Video](https://drive.google.com/file/d/1t9mmWnIuasQmGugOHnpAUkV2Pe1z1cwE/view?usp=sharing)
+- [Project Demo Video](https://drive.google.com/file/d/1XO9fmdQrscRcFxMwV7UBOmQp8CbkVV6V/view?usp=sharing)
 
 ## Links
 
-- [Project](wtwrbosh512.jumpingcrab.com)
+- [Project](https://wtwrbosh512.jumpingcrab.com)
 - [Figma Design](https://www.figma.com/file/DTojSwldenF9UPKQZd6RRb/Sprint-10%3A-WTWR)
 - [Github Pages](https://Bosh512.github.io/se_project_react/)
 - [Backend](https://github.com/Bosh512/se_project_express)

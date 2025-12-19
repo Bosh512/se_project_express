@@ -46,12 +46,12 @@ const deleteItem = (req, res, next) => {
         sendItem(res, item);
         return ClothingItem.findByIdAndDelete(itemId);
       }
-      return next(DeniedError("The request was denied. Error Code 403."));
+      return next(new DeniedError("The request was denied. Error Code 403."));
     })
     .catch((error) => {
       console.error(error);
       if (error.name === "DocumentNotFoundError") {
-        return next(NotFoundError("Not found. Error Code 404."));
+        return next(new NotFoundError("Not found. Error Code 404."));
       }
       if (error.name === "CastError") {
         return next(
